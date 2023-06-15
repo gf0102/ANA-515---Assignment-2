@@ -1,0 +1,61 @@
+---
+title: "ANA 515 - Assignment 2"
+author: Guilherme Jacob
+output: word_document
+date: "2023-06-15"
+---
+#Section 1
+
+The dataset used is about the alcohol consumption in 194 countries categorized into 4 separate categories: beer, wine, spirits, and the total amount of pure alcohol in litres consumed by an average person. The data was collected by the World Health Organisation by looking at the amount of liquor was purchased in a country during a year and then doing the calculation to gather the pure alcohol consumption. With this data it would interesting to explore patterns within geographical regions, religious countries, and if the fact that the country is an alcohol producer has any effect on alcohol consumption (ex. Russia and vodka).The data file is saved as a CSV file and is a delimited format using the comma as a delimiter.
+
+#Section 2
+```{r alcohol, echo=TRUE}
+file <- "https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv"
+alcohol <- read.csv(file)
+```
+
+#Section 3
+```{r clean, echo=TRUE}
+names(alcohol) <- c("country", "beer_servings", "spirit_servings", "wine_servings", "total_litres_of_pure_alcohol")
+```
+
+This dataframe has `r nrow(alcohol)` rows and `r ncol(alcohol)` columns. The names of the columns and a brief description of each are in the table below
+
+#Section 4
+```{r table, echo=TRUE}
+column_names <- c("Column Name", "Description")
+column_descriptions <- c(
+  "country", "Name of the country",
+  "beer_servings", "Number of beer servings per capita",
+  "spirit_servings", "Number of spirit servings per capita",
+  "wine_servings", "Number of wine servings per capita"
+)
+
+library(knitr)
+
+column_table <- matrix(c(column_names, column_descriptions), ncol = 2, byrow = TRUE)
+colnames(column_table) <- NULL
+
+# Print the table
+kable(column_table, format = "markdown", col.names = NULL)
+
+```
+
+
+#Section 5
+```{r summary, echo=TRUE}
+# Select three columns from the dataframe
+subset_data <- alcohol[, c("beer_servings", "spirit_servings", "wine_servings")]
+
+# Summary calculations
+summary_data <- data.frame(
+  Column = c("beer_servings", "spirit_servings", "wine_servings"),
+  Minimum = sapply(subset_data, min, na.rm = TRUE),
+  Maximum = sapply(subset_data, max, na.rm = TRUE),
+  Mean = sapply(subset_data, mean, na.rm = TRUE),
+  Missing = colSums(is.na(subset_data))
+)
+
+# Print the summary data
+summary_data
+```
